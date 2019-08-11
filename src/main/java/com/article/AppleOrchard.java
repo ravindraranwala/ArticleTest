@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
 
 public class AppleOrchard {
 	public static void main(String[] args) {
-		// int[] A = { 6, 1, 4, 6, 3, 2, 7, 4 };
-		int[] A = { 10, 19, 15 };
+		int[] A = { 6, 1, 4, 6, 3, 2, 7, 4 };
+		// int[] A = { 10, 19, 15 };
 		// int[] A = { 6, 1, 4, 6, 3, 4, 7, 2 };
 		System.out.println(solution(A, 3, 2));
 	}
@@ -28,7 +28,7 @@ public class AppleOrchard {
 		int[] maxFromRight = new int[length - L + 1];
 
 		final TreeMap<Integer, List<Integer>> sumOfKValuesToStartIdxMap = IntStream.rangeClosed(0, length - K).boxed()
-				.collect(Collectors.groupingBy(i -> getSumOfConsecutiveElements(A, i, K), TreeMap::new,
+				.collect(Collectors.groupingBy(i -> IntStream.range(i, i + K).map(j -> A[j]).sum(), TreeMap::new,
 						Collectors.mapping(Function.identity(), Collectors.toList())));
 
 		for (int i = 0, n = length - L + 1; i < n; i++) {
@@ -60,12 +60,5 @@ public class AppleOrchard {
 			maxSum = currentSum > maxSum ? currentSum : maxSum;
 		}
 		return maxSum + highestSumToIdxEntry.getKey();
-	}
-
-	private static int getSumOfConsecutiveElements(int[] A, int start, int count) {
-		int sum = 0;
-		for (int i = start; i < start + count; i++)
-			sum += A[i];
-		return sum;
 	}
 }

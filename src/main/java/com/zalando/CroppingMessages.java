@@ -11,8 +11,8 @@ public class CroppingMessages {
 		// int K = 14;
 		// String message = "Why not";
 		// int K = 100;
-//		String message = "The quick brown fox jumps over the lazy dog";
-//		int K = 39;
+		// String message = "The quick brown fox jumps over the lazy dog";
+		// int K = 39;
 		String message = "The quick brown fox jumps over the lazy dog";
 		int K = 2;
 		System.out.println(solution(message, K));

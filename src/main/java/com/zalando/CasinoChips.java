@@ -3,9 +3,10 @@ package com.zalando;
 public class CasinoChips {
 
 	public static void main(String[] args) {
-		int N = 18, K = 2;
+		// int N = 18, K = 2;
 		// int N = 8, K = 0;
-		// int N = 10, K = 10;
+		int N = 10, K = 10;
+		// int N = 2, K = 10;
 		System.out.println(solution(N, K));
 	}
 
@@ -15,7 +16,7 @@ public class CasinoChips {
 		while (N >= 2) {
 			if (K > 0) {
 				rounds++;
-				if (N % 2 == 0) {
+				if (N % 2 == 0 && N > 2) {
 					N = N / 2;
 					K--;
 				} else

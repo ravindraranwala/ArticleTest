@@ -1,8 +1,8 @@
 package com.amazon;
 
 import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.IntStream;
+
+import com.demo.MergeSort;
 
 /**
  * You are on a flight and wanna watch two movies during this flight. You are
@@ -29,33 +29,42 @@ public class MoviesOnFlight {
 		System.out.println(Arrays.toString(candidateMovies));
 	}
 
+	/**
+	 * It's two sum closest problem. Time complexity: O(nlogn). Space complexity:
+	 * O(1)
+	 * 
+	 * @param movie_duration
+	 * @param duration
+	 * @return
+	 */
 	public static int[] moviesWatched(int[] movie_duration, int duration) {
 		final int effectiveDuration = duration - 30;
-		/*
-		 * First get all the combinations of 2 movies with total duration is < duration
-		 * - 30.
-		 */
-		int[][] candidateMoviePairs = IntStream.range(0, movie_duration.length)
-				.mapToObj(i -> IntStream.range(i + 1, movie_duration.length)
-						.filter(j -> movie_duration[i] + movie_duration[j] <= effectiveDuration)
-						.mapToObj(j -> new int[] { movie_duration[i], movie_duration[j] }))
-				.flatMap(Function.identity()).toArray(int[][]::new);
+		MergeSort.sort(movie_duration, 0, movie_duration.length - 1);
+		// To store the indexes of the result pair.
+		int resL = 0, resR = 0;
+		// Initialize left, right indexes and the difference between the pair sum and x.
+		int minimumDiff = Integer.MAX_VALUE;
+		for (int l = 0, r = movie_duration.length - 1; l < r;) {
+			// Check if this pair is closer than the closest pair so far.
+			final int currentDiff = effectiveDuration - (movie_duration[l] + movie_duration[r]);
+			if (currentDiff >= 0) {
+				if (currentDiff < minimumDiff) {
+					resL = l;
+					resR = r;
+					minimumDiff = currentDiff;
+				} else if (currentDiff == minimumDiff && Integer.max(movie_duration[l], movie_duration[r]) > Integer
+						.max(movie_duration[resL], movie_duration[resR])) {
+					resL = l;
+					resR = r;
+				}
+			}
 
-		// Then get the highest element among the candidates.
-		int maxIdx = 0;
-
-		for (int k = 0, n = candidateMoviePairs.length; k < n; k++) {
-			int[] currentPair = candidateMoviePairs[k];
-			int[] currentMaxPair = candidateMoviePairs[maxIdx];
-			if (currentPair[0] + currentPair[1] > currentMaxPair[0] + currentMaxPair[1])
-				maxIdx = k;
-			// Handling a tie.
-			if (currentPair[0] + currentPair[1] == currentMaxPair[0] + currentMaxPair[1])
-				// If multiple found, return the pair with the longest movie.
-				maxIdx = Integer.max(currentPair[0], currentPair[1]) >= Integer.max(currentMaxPair[0],
-						currentMaxPair[1]) ? k : maxIdx;
+			// If this pair has more sum, move to smaller values.
+			if (movie_duration[l] + movie_duration[r] > effectiveDuration)
+				r--;
+			else
+				l++; // Move to larger values.
 		}
-
-		return candidateMoviePairs[maxIdx];
+		return new int[] { movie_duration[resL], movie_duration[resR] };
 	}
 }

@@ -47,23 +47,23 @@ public class MoviesOnFlight {
 		for (int l = 0, r = movie_duration.length - 1; l < r;) {
 			// Check if this pair is closer than the closest pair so far.
 			final int currentDiff = effectiveDuration - (movie_duration[l] + movie_duration[r]);
-			if (currentDiff >= 0) {
+			if (currentDiff > 0) {
 				if (currentDiff < minimumDiff) {
 					resL = l;
 					resR = r;
 					minimumDiff = currentDiff;
-				} else if (currentDiff == minimumDiff && Integer.max(movie_duration[l], movie_duration[r]) > Integer
-						.max(movie_duration[resL], movie_duration[resR])) {
-					resL = l;
-					resR = r;
 				}
+				l++; // Move to larger values.
 			}
 
 			// If this pair has more sum, move to smaller values.
-			if (movie_duration[l] + movie_duration[r] > effectiveDuration)
+			else if (currentDiff < 0)
 				r--;
-			else
-				l++; // Move to larger values.
+			else if (Integer.max(movie_duration[l], movie_duration[r]) > Integer.max(movie_duration[resL],
+					movie_duration[resR])) {
+				resL = l;
+				resR = r;
+			}
 		}
 		return new int[] { movie_duration[resL], movie_duration[resR] };
 	}

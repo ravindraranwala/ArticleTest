@@ -33,7 +33,7 @@ public class TreasureIslandOne {
 				{ 'X', 'D', 'D', 'O' } };
 		char[][] map2 = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
 				{ 'O', 'D', 'D', 'O' }, { 'O', 'D', 'X', 'O' } };
-		int minSteps = explore(map2);
+		int minSteps = explore(map);
 		System.out.println(String.format("The minimum route takes %d steps.", minSteps));
 	}
 
@@ -76,7 +76,7 @@ public class TreasureIslandOne {
 		return -1;
 	}
 	
-	private static class Point {
+	public static class Point {
 		final int r, c;
 
 		Point(int r, int c) {

@@ -41,16 +41,21 @@ public class MoviesOnFlight {
 		final int effectiveDuration = duration - 30;
 		MergeSort.sort(movie_duration, 0, movie_duration.length - 1);
 		// To store the indexes of the result pair.
-		int resL = 0, resR = 0;
+		int[] result = new int[2];
 		// Initialize left, right indexes and the difference between the pair sum and x.
 		int minimumDiff = Integer.MAX_VALUE;
 		for (int l = 0, r = movie_duration.length - 1; l < r;) {
 			// Check if this pair is closer than the closest pair so far.
 			final int currentDiff = effectiveDuration - (movie_duration[l] + movie_duration[r]);
 			if (currentDiff > 0) {
+				/*
+				 * If multiple found, return the pair with the longest movie. Just return the
+				 * first minimum found and that would do the trick ! The largest value
+				 * associated with the first minimum, is the largest value among all the ties.
+				 */
 				if (currentDiff < minimumDiff) {
-					resL = l;
-					resR = r;
+					result[0] = movie_duration[l];
+					result[1] = movie_duration[r];
 					minimumDiff = currentDiff;
 				}
 				l++; // Move to larger values.
@@ -59,12 +64,16 @@ public class MoviesOnFlight {
 			// If this pair has more sum, move to smaller values.
 			else if (currentDiff < 0)
 				r--;
-			else if (Integer.max(movie_duration[l], movie_duration[r]) > Integer.max(movie_duration[resL],
-					movie_duration[resR])) {
-				resL = l;
-				resR = r;
+			// This part is optional, it just short circuits the execution. No much saving here.
+			else {
+				/*
+				 * If any ties found, just consider only the first one, since it has the largest value.
+				 */
+				result[0] = movie_duration[l];
+				result[1] = movie_duration[r];
+				break;
 			}
 		}
-		return new int[] { movie_duration[resL], movie_duration[resR] };
+		return result;
 	}
 }

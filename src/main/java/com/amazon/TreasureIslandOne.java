@@ -26,13 +26,14 @@ import java.util.Queue;
  *
  */
 public class TreasureIslandOne {
+	private static int[][] directions = new int[][] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
 	public static void main(String[] args) {
 		char[][] map = { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
 				{ 'X', 'D', 'D', 'O' } };
 		char[][] map2 = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
 				{ 'O', 'D', 'D', 'O' }, { 'O', 'D', 'X', 'O' } };
-		int minSteps = explore(map);
+		int minSteps = explore(map2);
 		System.out.println(String.format("The minimum route takes %d steps.", minSteps));
 	}
 
@@ -42,105 +43,45 @@ public class TreasureIslandOne {
 			throw new IllegalArgumentException("Invalid island passed in.");
 		int rows = island.length, columns = island[0].length;
 		boolean[][] visited = new boolean[rows][columns];
-		Queue<int[]> queue = new ArrayDeque<>();
+		Queue<Point> queue = new ArrayDeque<>();
 		// For possible moving directions.
-		int[][] directions = new int[][] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
 		// Starting point, top left corner.
-		int[] bigin = new int[] { 0, 0 };
+		Point bigin = new Point(0, 0);
 
 		queue.offer(bigin);
-		visited[0][0] = true;
+		visited[0][0] = true;// mark as visited
 
 		// Since we skip the last step increment when an 'X' is encountered.
-		int steps = 1;
-		while (!queue.isEmpty()) {
-			for (int i = 0, n = queue.size(); i < n; ++i) {
-				int[] coordinate = queue.poll();
+		for (int steps = 1; !queue.isEmpty(); steps++) {
+			for (int i = 0, n = queue.size(); i < n; i++) {
+				Point point = queue.poll();
 				// Notice that the four direction is the implicit adjacency list.
 				for (int[] direction : directions) {
-					int x = coordinate[0] + direction[0], y = coordinate[1] + direction[1];
-					if (x < 0 || x >= rows || y < 0 || y >= columns || island[x][y] == 'D' || visited[x][y])
-						continue;
-
-					if (island[x][y] == 'X')
-						return steps;
-					/*
-					 * Mark the node as grey since we have already visited that. We don't need to
-					 * revisit this node again.
-					 */
-					queue.offer(new int[] { x, y });
-					visited[x][y] = true;
+					int r = point.r + direction[0], c = point.c + direction[1];
+					if (r >= 0 && r < rows && c >= 0 && c < columns && island[r][c] != 'D' && !visited[r][c]) {
+						if (island[r][c] == 'X')
+							return steps;
+						/*
+						 * Mark the node as grey since we have already visited that. We don't need to
+						 * revisit this node again.
+						 */
+						queue.offer(new Point(r, c));
+						visited[r][c] = true;
+					}
 
 				}
 			}
-			steps++;
 		}
-		return steps;
+		return -1;
 	}
+	
+	private static class Point {
+		final int r, c;
 
-	// private static int minDistToTreasureIsland(char[][] island) {
-	//
-	// int step = 0;
-	// if (island == null || island.length == 0)
-	// return 0;
-	// int row = island.length, col = island[0].length;
-	// int[] bigin = new int[] { 0, 0 };
-	// int[][] directions = new int[][] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }
-	// };
-	// boolean[][] visited = new boolean[row][col];
-	// Queue<int[]> queue = new LinkedList<>();
-	// queue.offer(bigin);
-	// while (!queue.isEmpty()) {
-	// int size = queue.size();
-	// while (size > 0) {
-	// int[] coor = queue.poll();
-	// int x = coor[0], y = coor[1];
-	// if (island[x][y] == 'X') {
-	// return step;
-	// }
-	// for (int i = 0; i < directions.length; i++) {
-	// int dx = x + directions[i][0];
-	// int dy = y + directions[i][1];
-	// if (dx >= 0 && dx < row && dy >= 0 && dy < col && !visited[dx][dy]
-	// && (island[dx][dy] == 'O' || island[dx][dy] == 'X')) {
-	// visited[dx][dy] = true;
-	// queue.offer(new int[] { dx, dy });
-	// }
-	// }
-	// size--;
-	// }
-	// step++;
-	// }
-	// return -1;
-	// }
-
-	// public static int treasureIsland(char[][] islands) {
-	// final int[][] dirs = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-	// if (islands.length == 0 || islands[0].length == 0 || islands[0][0] == 'D')
-	// return -1;
-	// if (islands[0][0] == 'X')
-	// return 0;
-	// int R = islands.length, C = islands[0].length;
-	// Queue<int[]> queue = new LinkedList<>();
-	// int steps = 1;
-	// queue.add(new int[] { 0, 0 });
-	// islands[0][0] = 'D';
-	// while (!queue.isEmpty()) {
-	// int size = queue.size();
-	// for (int i = 0; i < size; ++i) {
-	// int[] pos = queue.poll();
-	// for (int[] dir : dirs) {
-	// int x = pos[0] + dir[0], y = pos[1] + dir[1];
-	// if (x < 0 || x >= R || y < 0 || y >= C || islands[x][y] == 'D')
-	// continue;
-	// if (islands[x][y] == 'X')
-	// return steps;
-	// queue.add(new int[] { x, y });
-	// islands[x][y] = 'D';
-	// }
-	// }
-	// ++steps;
-	// }
-	// return -1;
-	// }
+		Point(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+	}
 }

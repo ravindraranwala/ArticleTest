@@ -13,8 +13,8 @@ public class Kclosest {
 
 	}
 
-	public static int[][] kClosestJava8(int[][] points, int k) {
-		return Arrays.stream(points).sorted(Comparator.comparingInt(a -> Math.abs(a[0]) + Math.abs(a[1]))).limit(k)
+	public static int[][] kClosestJava8(int[][] points, int K) {
+		return Arrays.stream(points).sorted(Comparator.comparingInt(a -> Math.abs(a[0]) + Math.abs(a[1]))).limit(K)
 				.toArray(int[][]::new);
 	}
 

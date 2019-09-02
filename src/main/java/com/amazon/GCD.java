@@ -9,13 +9,11 @@ public class GCD {
 		System.out.println(generalizedGCD(arr));
 	}
 
-	// METHOD SIGNATURE BEGINS, THIS METHOD IS REQUIRED
 	public static int generalizedGCD(int[] arr) {
 		if (arr == null || arr.length == 0)
 			return -1;
 		if (arr.length == 1)
 			return 1;
-		// WRITE YOUR CODE HERE
 		int gcd = gcd(arr[0], arr[1]);
 
 		for (int i = 2, n = arr.length; i < n; i++) {

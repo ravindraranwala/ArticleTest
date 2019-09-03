@@ -11,13 +11,13 @@ public class MinCosttoConnectAllNodes {
 	public static void main(String[] args) {
 		int[][] edges = new int[][] { { 1, 4 }, { 4, 5 }, { 2, 3 } };
 		int[][] newEdges = { { 1, 2, 5 }, { 1, 3, 10 }, { 1, 6, 2 }, { 5, 6, 5 } };
-		int minCost = minCostSpanningTreeKruskals(6, edges, newEdges);
+		int minCost = mstKruskals(6, edges, newEdges);
 		System.out.println(minCost);
 	}
 
-	public static int minCostSpanningTreeKruskals(int n, int[][] edges, int[][] newEdges) {
+	public static int mstKruskals(int n, int[][] edges, int[][] newEdges) {
 		int cost = 0;
-		Set<Integer> buildingTree = new HashSet<>();
+
 		List<Set<Integer>> treesInTheForrest = makeSet(n, edges);
 		/*
 		 * Sort the edges of G.E int nondecreasing order by weight.
@@ -30,18 +30,23 @@ public class MinCosttoConnectAllNodes {
 			if (subTreeOne != subTreeTwo) {
 				// Add the edge, compute the cost.
 				cost += newEdge[2];
-				// Merge two trees into one using Union operator.
-				buildingTree.addAll(treesInTheForrest.get(subTreeOne));
-				buildingTree.addAll(treesInTheForrest.get(subTreeTwo));
-				treesInTheForrest.removeIf(
-						s -> s == treesInTheForrest.get(subTreeOne) || s == treesInTheForrest.get(subTreeTwo));
-				treesInTheForrest.add(buildingTree);
+				union(treesInTheForrest, subTreeOne, subTreeTwo);
 			} // We have completed building the MCST
-			if (buildingTree.size() == n)
+			if (treesInTheForrest.size() == 1)
 				break;
 		}
 
 		return cost;
+	}
+
+	private static void union(List<Set<Integer>> treesInTheForrest, int subTreeOne, int subTreeTwo) {
+		Set<Integer> buildingTree = new HashSet<>();
+		// Merge two trees into one using Union operator.
+		buildingTree.addAll(treesInTheForrest.get(subTreeOne));
+		buildingTree.addAll(treesInTheForrest.get(subTreeTwo));
+		treesInTheForrest
+				.removeIf(s -> s == treesInTheForrest.get(subTreeOne) || s == treesInTheForrest.get(subTreeTwo));
+		treesInTheForrest.add(buildingTree);
 	}
 
 	// A utility function to find set of an element i

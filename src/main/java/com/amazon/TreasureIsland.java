@@ -22,7 +22,7 @@ public final class TreasureIsland {
 
 		// start at top left position.
 		final Queue<Vertex> queue = new ArrayDeque<>();
-		final Vertex s = new Vertex(0, 0, 0, new Vertex(-1, -1, -1, null));
+		final Vertex s = new Vertex(0, 0, 0, null);
 
 		discoveryMatrix[0][0] = true;
 		queue.add(s);

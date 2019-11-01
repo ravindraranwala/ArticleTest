@@ -63,7 +63,7 @@ public class TreasureIslandOne {
 						if (island[r][c] == 'X')
 							return steps;
 						/*
-						 * Mark the node as grey since we have already visited that. We don't need to
+						 * Mark the node as gray since we have already visited that. We don't need to
 						 * revisit this node again.
 						 */
 						queue.offer(new Point(r, c));

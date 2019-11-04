@@ -5,20 +5,28 @@ import java.util.Queue;
 
 public final class TreasureIsland {
 	public static void main(String[] args) {
-		final char[][] island = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
+		final char[][] map = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
 				{ 'X', 'D', 'D', 'O' } };
 
-//		char[][] map2 = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
+//		final char[][] map2 = new char[][] { { 'O', 'O', 'O', 'O' }, { 'D', 'O', 'D', 'O' }, { 'O', 'O', 'O', 'O' },
 //				{ 'O', 'D', 'D', 'O' }, { 'O', 'D', 'X', 'O' } };
-		final int minSteps = findMinStepsToGetTreasure(island);
-		System.out.println(String.format("The minimum route takes %d steps.", minSteps));
+		final String minStepsAndRoute = findMinStepsToTreasure(map);
+		System.out.println(minStepsAndRoute);
 	}
 
-	public static int findMinStepsToGetTreasure(char[][] island) {
-		final int numOfCols = island[0].length;
-		final int numOfRows = island.length;
+	public static String printRoute(Vertex v) {
+		if (v.getParent() == null)
+			return v.printBlock();
+
+		return printRoute(v.getParent()) + ", " + v.printBlock();
+	}
+
+	public static String findMinStepsToTreasure(char[][] mapArea) {
+		final int numOfCols = mapArea[0].length;
+		final int numOfRows = mapArea.length;
 
 		final boolean[][] discoveryMatrix = new boolean[numOfRows][numOfCols];
+		final int[][] moves = new int[][] { { 0, -1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } };
 
 		// start at top left position.
 		final Queue<Vertex> queue = new ArrayDeque<>();
@@ -29,33 +37,23 @@ public final class TreasureIsland {
 
 		while (!queue.isEmpty()) {
 			final Vertex u = queue.poll();
+			for (int[] move : moves) {
+				final int currentD = u.getD() + 1;
+				final int newRow = u.getRow() + move[0];
+				final int newCol = u.getCol() + move[1];
 
-			// traverse over u's adjacency list.
-			final int row = u.getRow();
-			final int col = u.getCol();
+				if ((0 <= newRow && newRow < numOfRows) && (0 <= newCol && newCol < numOfCols)
+						&& mapArea[newRow][newCol] != 'D' && !discoveryMatrix[newRow][newCol]) {
+					final Vertex v = new Vertex(newRow, newCol, currentD, u);
+					if (mapArea[newRow][newCol] == 'X')
+						return new StringBuilder().append(String.format("The minimum route takes %d steps. ", v.getD()))
+								.append("Route is: " + printRoute(v)).toString();
 
-			if (island[row][col] == 'X')
-				return u.getD();
-
-			final int currentD = u.getD() + 1;
-			// move left.
-			if (col - 1 >= 0 && island[row][col - 1] != 'D' && !discoveryMatrix[row][col - 1])
-				discover(queue, discoveryMatrix, new Vertex(row, col - 1, currentD, u));
-			// move right
-			if (col + 1 < numOfCols && island[row][col + 1] != 'D' && !discoveryMatrix[row][col + 1])
-				discover(queue, discoveryMatrix, new Vertex(row, col + 1, currentD, u));
-			// move up.
-			if (row - 1 >= 0 && island[row - 1][col] != 'D' && !discoveryMatrix[row - 1][col])
-				discover(queue, discoveryMatrix, new Vertex(row - 1, col, currentD, u));
-			// move down
-			if (row + 1 < numOfRows && island[row + 1][col] != 'D' && !discoveryMatrix[row + 1][col])
-				discover(queue, discoveryMatrix, new Vertex(row + 1, col, currentD, u));
+					queue.offer(v);
+					discoveryMatrix[newRow][newCol] = true;
+				}
+			}
 		}
-		return 0;
-	}
-
-	private static void discover(Queue<Vertex> queue, final boolean[][] discoveryMatrix, Vertex vertex) {
-		queue.offer(vertex);
-		discoveryMatrix[vertex.getRow()][vertex.getCol()] = true;
+		return "";
 	}
 }

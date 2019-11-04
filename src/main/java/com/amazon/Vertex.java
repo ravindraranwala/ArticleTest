@@ -1,5 +1,7 @@
 package com.amazon;
 
+import java.util.StringJoiner;
+
 public final class Vertex {
 	private final int row;
 	private final int col;
@@ -28,5 +30,9 @@ public final class Vertex {
 
 	public Vertex getParent() {
 		return parent;
+	}
+
+	public String printBlock() {
+		return new StringJoiner(", ", "(", ")").add(String.valueOf(row)).add(String.valueOf(col)).toString();
 	}
 }

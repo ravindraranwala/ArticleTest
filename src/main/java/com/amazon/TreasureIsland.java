@@ -2,6 +2,7 @@ package com.amazon;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.StringJoiner;
 
 public final class TreasureIsland {
 	public static void main(String[] args) {
@@ -15,10 +16,10 @@ public final class TreasureIsland {
 	}
 
 	public static String printRoute(Vertex v) {
-		if (v.getParent() == null)
+		if (v.parent == null)
 			return v.printBlock();
 
-		return printRoute(v.getParent()) + ", " + v.printBlock();
+		return printRoute(v.parent) + ", " + v.printBlock();
 	}
 
 	public static String findMinStepsToTreasure(char[][] mapArea) {
@@ -38,15 +39,15 @@ public final class TreasureIsland {
 		while (!queue.isEmpty()) {
 			final Vertex u = queue.poll();
 			for (int[] move : moves) {
-				final int currentD = u.getD() + 1;
-				final int newRow = u.getRow() + move[0];
-				final int newCol = u.getCol() + move[1];
+				final int currentD = u.d + 1;
+				final int newRow = u.row + move[0];
+				final int newCol = u.col + move[1];
 
 				if ((0 <= newRow && newRow < numOfRows) && (0 <= newCol && newCol < numOfCols)
 						&& mapArea[newRow][newCol] != 'D' && !discoveryMatrix[newRow][newCol]) {
 					final Vertex v = new Vertex(newRow, newCol, currentD, u);
 					if (mapArea[newRow][newCol] == 'X')
-						return new StringBuilder().append(String.format("The minimum route takes %d steps. ", v.getD()))
+						return new StringBuilder().append(String.format("The minimum route takes %d steps. ", v.d))
 								.append("Route is: " + printRoute(v)).toString();
 
 					queue.offer(v);
@@ -55,5 +56,24 @@ public final class TreasureIsland {
 			}
 		}
 		return "";
+	}
+
+	static class Vertex {
+		private final int row;
+		private final int col;
+		private final int d;
+		private final Vertex parent;
+
+		Vertex(int row, int col, int d, Vertex parent) {
+			super();
+			this.row = row;
+			this.col = col;
+			this.d = d;
+			this.parent = parent;
+		}
+
+		public String printBlock() {
+			return new StringJoiner(", ", "(", ")").add(String.valueOf(row)).add(String.valueOf(col)).toString();
+		}
 	}
 }

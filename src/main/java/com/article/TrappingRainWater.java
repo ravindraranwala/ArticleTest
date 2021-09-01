@@ -22,26 +22,31 @@ public class TrappingRainWater {
 	/**
 	 * This answers the question: https://leetcode.com/problems/trapping-rain-water/
 	 * 
-	 * @param height
-	 *            the height of the bars
+	 * @param height the height of the bars
 	 * @return amount of water trapped in units.
 	 */
 	public int collectWater(int[] height) {
-		int ans = 0;
-		if (height == null || height.length == 0)
-			return ans;
-		final int size = height.length;
-		int[] leftMax = new int[size], rightMax = new int[size];
-		leftMax[0] = height[0];
-		for (int i = 1; i < size; i++)
-			leftMax[i] = Integer.max(leftMax[i - 1], height[i]);
+		int lh = height[0];
+		final int n = height.length;
+		int rh = height[n - 1];
+		int lv = 0;
+		int rv = 0;
+		int v = 0;
 
-		rightMax[size - 1] = height[size - 1];
-		for (int i = size - 2; i >= 0; i--)
-			rightMax[i] = Integer.max(height[i], rightMax[i + 1]);
-
-		for (int i = 0; i < size; i++)
-			ans += Integer.min(rightMax[i], leftMax[i]) - height[i];
-		return ans;
+		for (int i = 0; i < n; i++) {
+			if (lh <= height[i]) {
+				lh = height[i];
+				v = v + lv;
+				lv = 0;
+			}
+			lv = lv + lh - height[i];
+			if (rh < height[n - i - 1]) {
+				rh = height[n - i - 1];
+				v = v + rv;
+				rv = 0;
+			}
+			rv = rv + rh - height[n - i - 1];
+		}
+		return v;
 	}
 }
